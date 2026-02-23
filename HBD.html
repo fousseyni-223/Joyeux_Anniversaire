@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>HAPPY BIRTHDAY ❤️</title>
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background: linear-gradient(to right, #ff758c, #ff7eb3);
+  text-align:center;
+  color:purple;
+  font-family:Arial;
+  
+}
+
+.container{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+
+h1{ font-size:45px; }
+
+button{
+  padding:15px 25px;
+  font-size:20px;
+  border:none;
+  background:white;
+  color:#ff4e88;
+  border-radius:10px;
+  cursor:pointer;
+}
+canvas{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:1;
+}
+
+.emoji{
+  position:absolute;
+  font-size:32px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall{
+  from{ transform:translateY(-10vh); }
+  to{ transform:translateY(110vh); }
+}
+  .photo-top-right{
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 220px;        
+  border-radius: 12px;
+  z-index: 5;        
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+
+<body>
+<img src="image0.png" class="photo-top-right">
+<canvas id="fireworks"></canvas>
+
+<div class="container">
+  <h1><i>🎉🎂Joyeux Anniversaire Chérieeeeeeeeeee🎂❤️</i></h1>
+<p>Que cette journée soit remplie de joie🥳🥳 Enjoy your Day🌹✨</p>
+  <h2>😍😍Tu comptes énormément pour moi💋❤️</h2>
+  <h3>🫠💋T'es Une Personne Magnifique🫶🏼Adorable🫠 avec un ❤️ en Or🫶🏼</h3>
+  <h2>❤️❤️❤️❤️❤️❤️BISOUS😘😘😘😘😘😘😘</h2>
+  <button onclick="startShow()">Clique ici 💘</button>
+</div>
+
+<!-- 🎶 MUSIQUE -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/10/18/audio_f2c88cce61.mp3" type="audio/mp3">
+</audio>
+
+<script>
+/* ================= CANVAS ================= */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+/* ================= MUSIQUE ================= */
+const music = document.getElementById("music");
+music.volume = 0.6;
+
+/* ================= FEUX STYLE SOLITAIRE ================= */
+let rockets = [];
+let particles = [];
+
+function launchRocket(){
+  rockets.push({
+    x: Math.random() * canvas.width,
+    y: canvas.height,
+    speed: Math.random()*3 + 5,
+    color: `hsl(${Math.random()*360},100%,60%)`
+  });
+}
+
+function explode(x,y,color){
+  for(let i=0;i<80;i++){
+    particles.push({
+      x:x,
+      y:y,
+      vx: Math.cos(i) * (Math.random()*4),
+      vy: Math.sin(i) * (Math.random()*4),
+      life: 60,
+      color: color
+    });
+  }
+}
+
+function animateFireworks(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  rockets.forEach((r, i) => {
+    r.y -= r.speed;
+    ctx.fillStyle = r.color;
+    ctx.fillRect(r.x, r.y, 3, 10);
+
+    if(r.y < canvas.height * 0.3){
+      explode(r.x, r.y, r.color);
+      rockets.splice(i,1);
+    }
+  });
+
+  particles.forEach((p,i)=>{
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x,p.y,3,3);
+    if(p.life <= 0) particles.splice(i,1);
+  });
+
+  requestAnimationFrame(animateFireworks);
+}
+
+/* ================= EMOJIS INFINIS ================= */
+function dropEmoji(){
+  const emojis = ["HBD"   ,   "😍"  ,  "🥰" ,  "😘", "🎈" , "🎁", "🎊" , "🎂🎂🎂"    ,   "🎉", "❤️" ,  "🫶🏽" ,   "HBD"   , "🥳"  ,   "🎈🎈"  , "🌹" ,    "💋"    ,      "I❤️U"    , "😍" , "🎂🎂🎂" , "🎉" , "HBD"   ,    "I❤️U"   ,  "HBD" , "😍" , "🎂🎂🎂" , "🥰" , "😘"  , "🎈🎈🎈"  ,  "🎁🎁" , "🎊" , "🎉" , "❤️❤️" , "🫶🏽" , "HBD🎂" , "🥳" , "🌹🌹🌹" , "💋" , "I❤️U" , "😍" , "🎂🎂", "🎉🎉🎉" , "HBD🎂" , "I❤️U"];
+  const e = document.createElement("div");
+  e.className = "emoji";
+  e.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+  e.style.left = Math.random()*100 + "vw";
+  e.style.animationDuration = (Math.random()*3 + 3) + "s";
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),7000);
+}
+
+/* ================= DÉMARRAGE AU CLIC ================= */
+function startShow(){
+
+  // 🎶 MUSIQUE (débloquée par clic)
+  music.play().catch(()=>{});
+
+  // 🎆 FEUX STYLE SOLITAIRE INFINIS
+  setInterval(launchRocket, 600);
+  animateFireworks();
+
+  // 🌧️ ÉMOJIS QUI TOMBENT SANS ARRÊT
+  setInterval(dropEmoji, 300);
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
